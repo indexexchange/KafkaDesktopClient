@@ -1,4 +1,4 @@
-# Kafka Desktop Client - OpenSource Ver.
+# Kafka Desktop Client
 
 The Kafka Desktop Client is a cross-platform desktop application that consumes, analyzes, and inspects Kafka messages in json format. Using a flexible set of tools, you can quickly and easily browse and filter messages, gather statistics, and scan and match traffic from different topics.
 To begin using the Kafka Desktop Client:
