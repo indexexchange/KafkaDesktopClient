@@ -99,47 +99,76 @@ select(.number >= 500 and .age > 90)
 ```
 
 
-# Build from source 
+# Build from source
 
-Install package manager [vcpkg](https://github.com/microsoft/vcpkg) for windows, linux and macos.
-Dependencies:
+#### In short
+On all OSs, need to install a package manager called vcpkg, which will fetch the required libraries and compile them locally. Windows/Macos are all handled by vcpkg  but for linux there is a separate (simple) step for the GUI library. Below are the IDEs which were tested and working correctly: 
+Linux/macos:  Visual Studio Code + Cmake extension
+Windows: Visual Studio Community
 
+#### Instructions
 ```bash
 
+# get the package manager
+cd /opt
+git clone git@github.com:microsoft/vcpkg.git
+cd vcpkg
+./bootstrap.sh # linux, macos
+bootstrap.bat  # windows
+
 # Kafka libs
-vcpkg install librdkafka[zlib]  # might need to use quotes on mac and linux
+vcpkg install "librdkafka[zlib]"  # linux, macos 
+vcpkg install librdkafka[zlib]  # windows 
 vcpkg install cppkafka
 
 # Json libs
 vcpkg install rapidjson
 vcpkg install nlohmann-json
 
+# next line: linux only
+./vcpkg.sh install ncurses 
+
 # Misc
 vcpkg install xlnt
-vcpkg install curlpp
 
-# Cross-platform GUI libs
+# Cross-platform GUI libs wxWidgets
+# Next line: only for windows and macos
 vcpkg install wxwidgets
+
+# Nxt lines: only for Linux:
+# [ref link](https://www.binarytides.com/install-wxwidgets-ubuntu/)
+# Go to wxwidgets.org and download source files (eg. https://www.wxwidgets.org/downloads/)
+# Extract the files to a directory and open a shell inside the directory
+sudo apt-get install libgtk-3-dev build-essential checkinstall
+mkdir gtk-build
+cd gtk-build/
+../configure --disable-shared --enable-unicode
+make
+sudo checkinstall
 ```
 
-Linux:
+## Linux
 ```bash
 mkdir build
 cd build
-cmake ../src "-DCMAKE_BUILD_TYPE=Release" "-DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake" "-DwxWidgets_CONFIG_EXECUTABLE=/opt/vcpkg/buildtrees/wxwidgets/x64-linux-rel/wx-config"
-cmake --build .
+cmake ../ "-DCMAKE_BUILD_TYPE=Release" "-DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake"
+cmake --build . --parallel 8
 ```
 
-MacOS:
+## MacOS
 ```bash
 mkdir build
 cd build
-cmake ../src "-DCMAKE_BUILD_TYPE=Release" "-DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake" "-DwxWidgets_CONFIG_EXECUTABLE=/opt/vcpkg/installed/x64-osx/tools/wxwidgets/wx-config"
-cmake --build .
+cmake .. "-DCMAKE_BUILD_TYPE=Release" "-DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake" "-DwxWidgets_CONFIG_EXECUTABLE=/opt/vcpkg/installed/x64-osx/tools/wxwidgets/wx-config"
+cmake --build . --parallel 8
 ```
 
-Win10: 
-With Visual Studio, open .sln file then Build->Build Solution (will have cmake available soon)
+## Win10
+
+With Visual Studio, open `.sln` file then Build->Build Solution.
+
+
+When building on Win10, you might need to make an additional modification to `rdkafka.h` library from `vcpkg\installed\x86-windows\include\librdkafka\rdkafka.h`, replace the following:
 ```cpp
 typedef SSIZE_T ssize_t;
 ```

@@ -73,7 +73,7 @@ void PacketView::OnSelect(wxDataViewEvent&)
     try {
         wxVariant value;
         gui_list_view->GetValue(value, row, gui_list_view->GetColumnCount()-1); //always display last column
-        std::string valuestr = value.GetString();
+        std::string valuestr = value.GetString().ToStdString();
         gui_text_view->SetText(*jq::pretty_json(valuestr));
     }
     catch (...) {

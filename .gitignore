@@ -11,3 +11,4 @@
 /test/x64
 *.j
 *.txt
+/build

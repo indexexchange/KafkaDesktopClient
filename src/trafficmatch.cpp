@@ -84,16 +84,16 @@ void TrafficMatch::OnRun(wxCommandEvent& event)
 
     // Gather user input
     int max_matches = gui_buffer_size->GetValue();
-    std::string brokers = gui_brokers->GetValue();
+    std::string brokers = gui_brokers->GetValue().ToStdString();
 
-    std::string topic1 = gui_topic1->GetValue();
-    std::string topic2 = gui_topic2->GetValue();
+    std::string topic1 = gui_topic1->GetValue().ToStdString();
+    std::string topic2 = gui_topic2->GetValue().ToStdString();
     
-    std::string filter1_query = gui_filter1->GetValue();
-    std::string filter2_query = gui_filter2->GetValue();
+    std::string filter1_query = gui_filter1->GetValue().ToStdString();
+    std::string filter2_query = gui_filter2->GetValue().ToStdString();
 
-    std::string prefilter1_query = gui_prefilter1->GetValue();
-    std::string prefilter2_query = gui_prefilter2->GetValue();
+    std::string prefilter1_query = gui_prefilter1->GetValue().ToStdString();
+    std::string prefilter2_query = gui_prefilter2->GetValue().ToStdString();
 
     std::stringstream message;
     if (gui_choice->GetStringSelection() == "in") {

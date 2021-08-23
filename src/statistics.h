@@ -26,6 +26,7 @@ private:
 	void ConsoleShowMessage(std::string);
 	void ShowErrorDialog(std::string);
 	// 
+
 	std::shared_ptr<bool> is_streaming_;
 
 	// scheduler

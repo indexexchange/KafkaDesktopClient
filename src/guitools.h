@@ -84,7 +84,7 @@ namespace guitools {
 
         std::vector<size_t> positions; // holds all the positions that sub occurs within str
 
-        std::string text = ctrl->GetText();
+        std::string text = ctrl->GetText().ToStdString();
         size_t pos = text.find(word, 0);
         while (pos != std::string::npos)
         {
