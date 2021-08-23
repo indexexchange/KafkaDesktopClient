@@ -23,7 +23,7 @@
 #include "inspector.h"
 #include "trafficmatch.h"
 
-const std::string VERSION = "KafkaDesktopClient 2.3";
+const std::string VERSION = "KafkaDesktopClient 2.6";
 const std::string BUILD_TIME = __TIME__;
 const std::string BUILD_DATE = __DATE__; 
 
