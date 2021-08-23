@@ -45,9 +45,9 @@ void Statistics::OnRun(wxCommandEvent& event)
 
     // Gather user input
     int max = gui_buffer_size->GetValue();
-    std::string topic = gui_topic->GetValue();
-    std::string brokers = gui_brokers->GetValue();
-    std::string pf = gui_filter->GetValue();
+    std::string topic = gui_topic->GetValue().ToStdString();
+    std::string brokers = gui_brokers->GetValue().ToStdString();
+    std::string pf = gui_filter->GetValue().ToStdString();
 
     auto prefilter = jq::FilterPtr(pf);
     try {
@@ -65,7 +65,7 @@ void Statistics::OnRun(wxCommandEvent& event)
     for (size_t i = 0; i < total_rows; ++i) {
         auto filter_query = gui_grid->GetCellValue(i, 0);
         if (!filter_query.empty()) {
-            auto f = jq::FilterPtr(filter_query);
+            auto f = jq::FilterPtr(filter_query.ToStdString());
             try {
                 f->Compile();
             }
@@ -177,4 +177,5 @@ void Statistics::ShowErrorDialog(std::string msg)
         error, wxT("JQ Filter"), wxOK | wxICON_ERROR);
     dial.ShowModal();
 }
+
 

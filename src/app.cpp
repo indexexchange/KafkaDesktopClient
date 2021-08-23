@@ -144,7 +144,7 @@ void App::OnSelectMenuExport(wxCommandEvent& event)
     if (saveFileDialog.ShowModal() == wxID_CANCEL)
         return;     // the user changed idea...
 
-    std::string path = saveFileDialog.GetPath();
+    std::string path = saveFileDialog.GetPath().ToStdString();
     logger_info << "Export to: " << path;
 
     std::vector<std::shared_ptr<std::string>> results;
@@ -284,7 +284,7 @@ void App::OnSelectMenuImport(wxCommandEvent& event)
     if (OpenFileDialog.ShowModal() == wxID_CANCEL)
         return;     // the user changed idea...
 
-    std::string path = OpenFileDialog.GetPath();
+    std::string path = OpenFileDialog.GetPath().ToStdString();
     logger_info << "Import: " << path;
 
     auto selected_tab = auinotebook->GetSelection();    // 0 = inspector, 1 = stats, 2 = traffic match

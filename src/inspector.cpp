@@ -45,7 +45,7 @@ void Inspector::SetFilter(std::string value)
 
 std::string Inspector::GetFilter()
 {
-    return gui_filter->GetValue();
+    return gui_filter->GetValue().ToStdString();
 }
 
 void Inspector::SetTopic(std::string value)
@@ -55,7 +55,7 @@ void Inspector::SetTopic(std::string value)
 
 std::string Inspector::GetTopic()
 {
-    return gui_topic->GetValue();
+    return gui_topic->GetValue().ToStdString();
 }
 
 std::vector<std::shared_ptr<std::string>> Inspector::GetDisplayResults()
@@ -118,9 +118,9 @@ void Inspector::OnRun(wxCommandEvent& event)
 
     // Gather user input
     int max = gui_buffer_size->GetValue();
-    std::string topic = gui_topic->GetValue();
-    std::string brokers = gui_brokers->GetValue();
-    std::string filter_query = gui_filter->GetValue();
+    std::string topic = gui_topic->GetValue().ToStdString();
+    std::string brokers = gui_brokers->GetValue().ToStdString();
+    std::string filter_query = gui_filter->GetValue().ToStdString();
 
     filter_query_ = filter_query;
 
@@ -292,7 +292,8 @@ void Inspector::OnSelect(wxDataViewEvent& event)
 
     try {
         auto result = filter.Apply(data);
-        gui_text_view->SetText(*jq::pretty_json(result));
+        std::string str = *jq::pretty_json(result);
+        gui_text_view->SetText(str);
 
         // highlight search word if any
         wxCommandEvent evt;
@@ -311,7 +312,7 @@ void Inspector::OnSelect(wxDataViewEvent& event)
 
 void Inspector::OnSearchPartial(wxCommandEvent& event)
 {
-    auto word = gui_search->GetValue();
+    std::string word = gui_search->GetValue().ToStdString();
     guitools::search_partial_styledtextctrl(gui_text_view, word);
     
 }
@@ -319,7 +320,7 @@ void Inspector::OnSearchPartial(wxCommandEvent& event)
 void Inspector::OnSearch(wxCommandEvent& event)
 {
     // search for all matches
-    auto word = gui_search->GetValue();
+    std::string word = gui_search->GetValue().ToStdString();
     guitools::search_styledtextctrl(gui_text_view, word);
 }
 
@@ -335,8 +336,8 @@ void Inspector::SyncCache()
     // update cache with new request
     settings::cache::Update(
         gui_buffer_size->GetValue(),
-        gui_topic->GetValue(),
-        gui_filter->GetValue()
+        gui_topic->GetValue().ToStdString(),
+        gui_filter->GetValue().ToStdString()
     );
     
 
