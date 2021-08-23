@@ -117,12 +117,12 @@ void App::OnAbout(wxCommandEvent& event)
     about->AddHeader("Description");
 
     std::stringstream ss;
-    ss << R"##(The Kafka Desktop Client is a cross-platform desktop application that consumes, analyzes, and inspects Kafka messages. Using the flexible set of tools, you can quickly and easily browse and filter messages, gather statistics, and scan and match traffic from different topics.\n\n)##";
+    ss << R"##(The Kafka Desktop Client is a cross-platform desktop application that consumes, analyzes, and inspects Kafka messages. Using the flexible set of tools, you can quickly and easily browse and filter messages, gather statistics and scan and match traffic from different topics.\n\n)##";
     about->AddParagraph(ss.str());
     about->NewLine();
 
     about->AddHeader("License");
-    about->AddParagraph("Internal use at Index Exchange.");
+    about->AddParagraph("Apache 2.0");
 
     about->Show();
 }
