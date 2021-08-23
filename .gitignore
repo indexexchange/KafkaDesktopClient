@@ -12,3 +12,4 @@
 *.j
 *.txt
 /build
+.vscode
