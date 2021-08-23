@@ -143,6 +143,7 @@ namespace settings {
 
 		std::string Get(std::string key) {
 			// TODO: first loads the settings, key value pairs.
+			return "";
 		}
 
 	} // cache
