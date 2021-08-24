@@ -21,26 +21,29 @@ public:
 	~TrafficMatch();
 
 private:
-	virtual void OnFilter(wxCommandEvent&);		// Apply filter
-	virtual void OnBrowse(wxCommandEvent&);		// Browse topic selection
-	virtual void OnCompareChoice(wxCommandEvent&);	// user selects choice for comparison of two traffic: either == or "in"
-	virtual void OnKeyUpFilter(wxKeyEvent&);	// Detect when user finishes typing filter
-	virtual void OnKeyUpTopic1(wxKeyEvent&);	// 
-	virtual void OnkeyUpTopic2(wxKeyEvent&);	//
-	virtual void OnMatch(wxCommandEvent&);		// Find matching traffic pair for current item
-	virtual void OnRun(wxCommandEvent&);
-	virtual void OnSelect(wxDataViewEvent&);	// Select item to display
-	virtual void OnMarginClick(wxStyledTextEvent& event);
-	virtual void OnActivated(wxDataViewEvent& event);
+	void OnFilter(wxCommandEvent&);		// Apply filter
+	void OnBrowse(wxCommandEvent&);		// Browse topic selection
+	void OnCompareChoice(wxCommandEvent&);	// user selects choice for comparison of two traffic: either == or "in"
+	void OnKeyUpFilter(wxKeyEvent&);	// Detect when user finishes typing filter
+	void OnKeyUpTopic1(wxKeyEvent&);	// 
+	void OnkeyUpTopic2(wxKeyEvent&);	//
+	void OnMatch(wxCommandEvent&);		// Find matching traffic pair for current item
+	void OnRun(wxCommandEvent&);
+	void OnSelect(wxDataViewEvent&);	// Select item to display
+	void OnMarginClick(wxStyledTextEvent& event);
+	void OnActivated(wxDataViewEvent& event);
+	void OnDropdownF(wxCommandEvent& event);
+	void OnDropdownPf1(wxCommandEvent& event);
+	void OnDropdownPf2(wxCommandEvent& event);
 
-private:
+	// Util func
+	void SyncCache(wxComboBox* box);
 	void Clear();	// Clear all memory and cached files
 	void ShowMessage(std::string);
 	void ShowErrorDialog(std::string);
 	void ConsoleShowStats();
 	void LoadTopicSelection();
 
-private:
 	static const std::string file1_;
 	static const std::string file2_;
 	static const std::string scratch_;

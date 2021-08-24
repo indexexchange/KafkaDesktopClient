@@ -266,13 +266,13 @@ class TrafficMatchPanel : public wxPanel
 		wxComboBox* gui_topic2;
 		wxComboBox* gui_filter2;
 		wxStaticText* m_staticText5;
-		wxTextCtrl* gui_prefilter1;
+		wxComboBox* gui_prefilter1;
 		wxStaticText* m_staticText6;
-		wxTextCtrl* gui_prefilter2;
+		wxComboBox* gui_prefilter2;
 		wxStaticLine* m_staticline1;
 		wxRadioBox* gui_browse;
 		wxButton* gui_button_filter;
-		wxTextCtrl* gui_filter;
+		wxComboBox* gui_filter;
 		wxStaticText* gui_console;
 		wxSplitterWindow* m_splitter7;
 		wxPanel* m_panel14;
@@ -288,7 +288,6 @@ class TrafficMatchPanel : public wxPanel
 		virtual void OnkeyUpTopic2( wxKeyEvent& event ) { event.Skip(); }
 		virtual void OnBrowse( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnFilter( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnKeyUpFilter( wxKeyEvent& event ) { event.Skip(); }
 		virtual void OnActivated( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void OnSelect( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void OnMatch( wxCommandEvent& event ) { event.Skip(); }
