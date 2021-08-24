@@ -76,6 +76,13 @@ namespace guitools {
         ctrl->IndicatorSetAlpha(NUM, 30);
 	}
 
+    inline void theme_styledtextctrl(wxStyledTextCtrl* ctrl, wxColour backgroundColor, wxColour foregroundColor) {
+        // set theme
+        ctrl->StyleSetBackground(wxSTC_STYLE_DEFAULT, backgroundColor);
+        ctrl->StyleSetForeground(wxSTC_STYLE_DEFAULT, foregroundColor);
+        ctrl->StyleClearAll();
+    }
+
     inline void search_styledtextctrl(wxStyledTextCtrl* ctrl, std::string word) {
 
         if (word.size() < 3) {
