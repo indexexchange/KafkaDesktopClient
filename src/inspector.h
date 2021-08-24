@@ -19,36 +19,40 @@ class Inspector : public InspectorPanel
 {
 public:
 	Inspector(wxWindow* window);
+	~Inspector();
 
 	void SetFilter(std::string);
-	std::string GetFilter();
-
 	void SetTopic(std::string);
-	std::string GetTopic();
 
+	std::string GetFilter();
+	std::string GetTopic();
 	std::vector<std::shared_ptr<std::string>> GetDisplayResults();
 
 	void AddToBuffer(std::shared_ptr<std::string> request);
 	void AddToBuffer(std::string request);
 	void ForceRefresh(void);
-	~Inspector();
 
 private:
-	// Virtual event handlers, overide them in your derived class
-	virtual void OnRun(wxCommandEvent& event);
-	virtual void OnFilter(wxCommandEvent& event);
-	virtual void OnKeyUpFilter(wxKeyEvent& event);
-	virtual void OnSelect(wxDataViewEvent& event);
-    virtual void OnSearchPartial(wxCommandEvent& event);
-    virtual void OnSearch(wxCommandEvent& event);
-    virtual void OnSearchCancel(wxCommandEvent& event);
+	// GUI Callbacks
+	void OnRun(wxCommandEvent& event);
+	void OnStop(wxCommandEvent& event);
+	void OnFilter(wxCommandEvent& event);
+	void OnKeyUpFilter(wxKeyEvent& event);
+	void OnSelect(wxDataViewEvent& event);
+    void OnSearchPartial(wxCommandEvent& event);
+    void OnSearch(wxCommandEvent& event);
+    void OnSearchCancel(wxCommandEvent& event);
 
-
-private:
+	// Util func
+	enum class State { Idle = 1, Connecting, Running};
+	void SetGUIState(State);
 	void SyncCache();
 	void UpdateStats();
 	void ShowMessage(std::string);
 	void ShowErrorDialog(std::string);
+
+	//
+	State state_;
 
 	// Data Buffer used to accumulate kafka packets
 	DataBuffer<std::shared_ptr<std::string>> buffer_;
