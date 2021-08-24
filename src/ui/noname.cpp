@@ -757,18 +757,14 @@ TrafficMatchPanel::TrafficMatchPanel( wxWindow* parent, wxWindowID id, const wxP
 	m_staticText5->Wrap( -1 );
 	bSizer36->Add( m_staticText5, 0, wxALIGN_CENTER|wxALL, 5 );
 
-	gui_prefilter1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gui_prefilter1->SetToolTip( wxT("apply this filter to topic 1 before matching") );
-
+	gui_prefilter1 = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
 	bSizer36->Add( gui_prefilter1, 1, wxALL, 5 );
 
 	m_staticText6 = new wxStaticText( this, wxID_ANY, wxT("Topic2 Prefilter"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
 	bSizer36->Add( m_staticText6, 0, wxALIGN_CENTER|wxALL, 5 );
 
-	gui_prefilter2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gui_prefilter2->SetToolTip( wxT("apply this filter to topic 2 before matching") );
-
+	gui_prefilter2 = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
 	bSizer36->Add( gui_prefilter2, 1, wxALL, 5 );
 
 
@@ -812,9 +808,7 @@ TrafficMatchPanel::TrafficMatchPanel( wxWindow* parent, wxWindowID id, const wxP
 	gui_button_filter = new wxButton( this, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer46->Add( gui_button_filter, 0, wxALL, 5 );
 
-	gui_filter = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gui_filter->SetToolTip( wxT("apply filter after requests have been collected") );
-
+	gui_filter = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
 	bSizer46->Add( gui_filter, 1, wxALL, 5 );
 
 
@@ -917,7 +911,6 @@ TrafficMatchPanel::TrafficMatchPanel( wxWindow* parent, wxWindowID id, const wxP
 	gui_topic2->Connect( wxEVT_KEY_UP, wxKeyEventHandler( TrafficMatchPanel::OnkeyUpTopic2 ), NULL, this );
 	gui_browse->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( TrafficMatchPanel::OnBrowse ), NULL, this );
 	gui_button_filter->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( TrafficMatchPanel::OnFilter ), NULL, this );
-	gui_filter->Connect( wxEVT_KEY_UP, wxKeyEventHandler( TrafficMatchPanel::OnKeyUpFilter ), NULL, this );
 	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( TrafficMatchPanel::OnActivated ), NULL, this );
 	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( TrafficMatchPanel::OnSelect ), NULL, this );
 	gui_button_match->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( TrafficMatchPanel::OnMatch ), NULL, this );
@@ -932,7 +925,6 @@ TrafficMatchPanel::~TrafficMatchPanel()
 	gui_topic2->Disconnect( wxEVT_KEY_UP, wxKeyEventHandler( TrafficMatchPanel::OnkeyUpTopic2 ), NULL, this );
 	gui_browse->Disconnect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( TrafficMatchPanel::OnBrowse ), NULL, this );
 	gui_button_filter->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( TrafficMatchPanel::OnFilter ), NULL, this );
-	gui_filter->Disconnect( wxEVT_KEY_UP, wxKeyEventHandler( TrafficMatchPanel::OnKeyUpFilter ), NULL, this );
 	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( TrafficMatchPanel::OnActivated ), NULL, this );
 	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( TrafficMatchPanel::OnSelect ), NULL, this );
 	gui_button_match->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( TrafficMatchPanel::OnMatch ), NULL, this );
