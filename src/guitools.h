@@ -76,6 +76,13 @@ namespace guitools {
         ctrl->IndicatorSetAlpha(NUM, 30);
 	}
 
+    inline void theme_styledtextctrl(wxStyledTextCtrl* ctrl, wxColour backgroundColor, wxColour foregroundColor) {
+        // set theme
+        ctrl->StyleSetBackground(wxSTC_STYLE_DEFAULT, backgroundColor);
+        ctrl->StyleSetForeground(wxSTC_STYLE_DEFAULT, foregroundColor);
+        ctrl->StyleClearAll();
+    }
+
     inline void search_styledtextctrl(wxStyledTextCtrl* ctrl, std::string word) {
 
         if (word.size() < 3) {
@@ -84,7 +91,7 @@ namespace guitools {
 
         std::vector<size_t> positions; // holds all the positions that sub occurs within str
 
-        std::string text = ctrl->GetText();
+        std::string text = ctrl->GetText().ToStdString();
         size_t pos = text.find(word, 0);
         while (pos != std::string::npos)
         {

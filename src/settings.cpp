@@ -42,8 +42,10 @@ namespace settings {
 		void Update(int max, std::string topic, std::string filter) {
 			Load(); // make sure file is loaded first
 
-			if (cache.empty()) {
+			if(cache.find("topics") == cache.end()){
 				cache["topics"] = { "topic_name" };
+			}
+			if(cache.find("filters") == cache.end()){
 				cache["filters"] = { ".request" };
 			}
 
@@ -113,41 +115,6 @@ namespace settings {
 
 	} // cache
 } // settings
-
-namespace settings {
-	namespace defaults {
-
-		namespace {
-			const std::string kSettingsPath = "settings.j";
-			json defaults = nullptr;
-
-		} // namespace
-
-		void Load() {
-
-			// if already loaded, ignore
-			if (defaults != nullptr) {
-				return;
-			}
-
-			try {
-				auto cache_ptr = util::ReadFile(kSettingsPath);
-				if (!cache_ptr->empty()) {
-					defaults = json::parse(*cache_ptr);
-				}
-			}
-			catch (std::exception& e) {
-				logger_err << "Exception reading default settings file: " << e.what();
-			}
-		}
-
-		std::string Get(std::string key) {
-			// TODO: first loads the settings, key value pairs.
-		}
-
-	} // cache
-} // settings defaults
-
 
 namespace settings {
 	namespace filters {

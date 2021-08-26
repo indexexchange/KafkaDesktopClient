@@ -14,6 +14,7 @@
 #include "scheduler.h"
 #include "util.h"
 #include "guitools.h"
+#include "settings.h"
 
 const std::string TrafficMatch::file1_ = "temp_topic1_cache.txt";
 const std::string TrafficMatch::file2_ = "temp_topic2_cache.txt";
@@ -28,6 +29,10 @@ TrafficMatch::TrafficMatch(wxWindow* window) : TrafficMatchPanel(window)
 
     // Decorate text view
     guitools::decorate_styledtextctrl(gui_text_view);
+
+    // copy theme from list view because text view does not change with the OS theme...
+    guitools::theme_styledtextctrl(gui_text_view, gui_list_view->GetBackgroundColour(), gui_list_view->GetForegroundColour());
+
     // Connect folding function when user clicks margin
     gui_text_view->Connect(wxEVT_STC_MARGINCLICK, wxStyledTextEventHandler(TrafficMatch::OnMarginClick), NULL, this);
 
@@ -84,16 +89,16 @@ void TrafficMatch::OnRun(wxCommandEvent& event)
 
     // Gather user input
     int max_matches = gui_buffer_size->GetValue();
-    std::string brokers = gui_brokers->GetValue();
+    std::string brokers = gui_brokers->GetValue().ToStdString();
 
-    std::string topic1 = gui_topic1->GetValue();
-    std::string topic2 = gui_topic2->GetValue();
+    std::string topic1 = gui_topic1->GetValue().ToStdString();
+    std::string topic2 = gui_topic2->GetValue().ToStdString();
     
-    std::string filter1_query = gui_filter1->GetValue();
-    std::string filter2_query = gui_filter2->GetValue();
+    std::string filter1_query = gui_filter1->GetValue().ToStdString();
+    std::string filter2_query = gui_filter2->GetValue().ToStdString();
 
-    std::string prefilter1_query = gui_prefilter1->GetValue();
-    std::string prefilter2_query = gui_prefilter2->GetValue();
+    std::string prefilter1_query = gui_prefilter1->GetValue().ToStdString();
+    std::string prefilter2_query = gui_prefilter2->GetValue().ToStdString();
 
     std::stringstream message;
     if (gui_choice->GetStringSelection() == "in") {
@@ -335,7 +340,9 @@ void TrafficMatch::OnFilter(wxCommandEvent& event)
             if (jq::has_data(result)) {
                 wxVector<wxVariant> data;
                 data.push_back(wxVariant(std::to_string(i)));
-                data.push_back(*result);
+                // data.push_back(*result);
+                wxString wstr = wxString::FromUTF8(result->c_str());
+                data.push_back(wstr);
                 gui_list_view->AppendItem(data);
             }
         }
@@ -568,6 +575,21 @@ void TrafficMatch::OnSelect(wxDataViewEvent& event)
     }
 }
 
+void TrafficMatch::SyncCache(wxComboBox* box)
+{
+    // update filter and topic drop downs with latest data
+    auto filters = settings::cache::get_filters();
+
+    std::string current_value = box->GetValue().ToStdString();
+    box->Clear();
+
+    for (auto& f : filters) {
+        box->Append(f);
+    }
+
+    box->SetValue(current_value);
+}
+
 void TrafficMatch::Clear()
 {
 
@@ -648,7 +670,9 @@ void TrafficMatch::LoadTopicSelection()
         //dataViewList
         wxVector<wxVariant> data;
         data.push_back(wxVariant(id));
-        data.push_back(wxVariant(*packet));
+        // data.push_back(wxVariant(*packet));
+        wxString wstr = wxString::FromUTF8(packet->c_str());
+        data.push_back(wstr);
         gui_list_view->AppendItem(data);
 
         ++count;
@@ -664,6 +688,21 @@ void TrafficMatch::OnActivated(wxDataViewEvent& event)
 {
     wxCommandEvent e;
     OnMatch(e);
+}
+
+void TrafficMatch::OnDropdownF(wxCommandEvent& event)
+{
+    SyncCache(gui_filter);
+}
+
+void TrafficMatch::OnDropdownPf1(wxCommandEvent& event)
+{
+    SyncCache(gui_prefilter1);
+}
+
+void TrafficMatch::OnDropdownPf2(wxCommandEvent& event)
+{
+    SyncCache(gui_prefilter2);
 }
 
 const string TrafficMatch::help = R"#(To begin press Run

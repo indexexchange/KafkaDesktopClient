@@ -6,15 +6,21 @@
 #include "../logger.h"
 #include "jqutil.h"
 #include "lexer.h"
+#include "../settings.h"
+#include "../../3rdparty/include/libjq.h"
 
 // Public interface 
 namespace jq {
+	bool FilterAPI::use_full_jq = true;
 	FilterAPI::FilterAPI(std::string q) : query_(q)
 	{
 	}
 
 	void FilterAPI::Compile()
 	{
+		if(use_full_jq){
+			return;
+		}
 		auto fchain = jq::internal::parse(query_);
 		
 		filter_chain_.insert(filter_chain_.end(), std::make_move_iterator(fchain.begin()),
@@ -29,6 +35,13 @@ namespace jq {
 
 	std::shared_ptr<std::string> FilterAPI::Apply(std::shared_ptr<std::string> msg)
 	{
+		if(use_full_jq){
+			if(query_.empty()){ 
+				return msg;
+			}
+			auto result = std::make_shared<std::string>(cgoFilter(&query_[0], &(*msg)[0]));
+			return result;
+		}else{
 		Document doc;
 		doc.Parse(msg->c_str());
 
@@ -54,6 +67,7 @@ namespace jq {
 
 			auto result = internal::to_string_ptr(value);
 			return result;
+			}
 		}
 	}
 }

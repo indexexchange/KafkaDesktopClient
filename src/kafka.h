@@ -76,7 +76,7 @@ namespace kafka {
                     auto msg_ptr = std::make_shared<std::string>(msg.get_payload());
 
                     if (topic_ptr->find("arrays") != std::string::npos) {
-                        // Convert auditlog topic from plain string into json array
+                        // todo: run a test on the json and check if it's an array (now just checking topic name but should test the json itself)
                         msg_ptr = util::try_json_array(msg_ptr);
                     }
 

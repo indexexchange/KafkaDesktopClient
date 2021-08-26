@@ -1,0 +1,1 @@
+go build -o libjq.dll -buildmode=c-shared

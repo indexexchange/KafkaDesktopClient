@@ -156,6 +156,7 @@ namespace jq {
 		std::string query_;
 		std::vector<jq::internal::filter_ptr> filter_chain_;
 	public:
+		static bool use_full_jq;
 		FilterAPI(std::string);
 		void Compile();
 		std::shared_ptr<std::string> Apply(std::shared_ptr<std::string>);

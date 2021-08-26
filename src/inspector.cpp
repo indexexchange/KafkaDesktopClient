@@ -17,12 +17,12 @@ Inspector::Inspector(wxWindow* window) : InspectorPanel(window)
 
     // Decorate gui_text_view (colors, folding)
     guitools::decorate_styledtextctrl(gui_text_view);
+
+    // copy theme from list view because text view does not change with the OS theme...
+    guitools::theme_styledtextctrl(gui_text_view, gui_list_view->GetBackgroundColour(), gui_list_view->GetForegroundColour());
+
     // Connect text view margin click to folding text function
     gui_text_view->Connect(wxEVT_STC_MARGINCLICK, wxStyledTextEventHandler(Inspector::OnMarginClick), NULL, this);
-
-    // Set button images
-    guitools::apply_graphic(gui_button_run, guitools::PNG::PLAY);
-    guitools::apply_graphic(gui_button_filter, guitools::PNG::FILTER);
 
     //
     scheduler_ = std::make_shared<Scheduler>(150);
@@ -36,6 +36,8 @@ Inspector::Inspector(wxWindow* window) : InspectorPanel(window)
     SyncCache();
 
     gui_text_view->SetText(help);
+
+    SetGUIState(State::Idle);
 }
 
 void Inspector::SetFilter(std::string value)
@@ -45,7 +47,7 @@ void Inspector::SetFilter(std::string value)
 
 std::string Inspector::GetFilter()
 {
-    return gui_filter->GetValue();
+    return gui_filter->GetValue().ToStdString();
 }
 
 void Inspector::SetTopic(std::string value)
@@ -55,7 +57,7 @@ void Inspector::SetTopic(std::string value)
 
 std::string Inspector::GetTopic()
 {
-    return gui_topic->GetValue();
+    return gui_topic->GetValue().ToStdString();
 }
 
 std::vector<std::shared_ptr<std::string>> Inspector::GetDisplayResults()
@@ -97,30 +99,14 @@ Inspector::~Inspector()
 
 void Inspector::OnRun(wxCommandEvent& event)
 {
-    SyncCache();
 
-    if (*is_streaming_) {
-        *is_streaming_ = false;
-        gui_button_run->SetLabelText("Run");
-        guitools::apply_graphic(gui_button_run, guitools::PNG::PLAY);
-        return;
-    }
-
-    // Update buttons (Apply and Run)
-    gui_button_filter->Disable();
-    gui_button_run->SetLabelText("Stop");
-    guitools::apply_graphic(gui_button_run, guitools::PNG::STOP);
-
-    // Clear display 
-    buffer_.clear();
-    gui_list_view->DeleteAllItems();
-    gui_text_view->SetText("");
+    SetGUIState(State::Connecting);
 
     // Gather user input
     int max = gui_buffer_size->GetValue();
-    std::string topic = gui_topic->GetValue();
-    std::string brokers = gui_brokers->GetValue();
-    std::string filter_query = gui_filter->GetValue();
+    std::string topic = gui_topic->GetValue().ToStdString();
+    std::string brokers = gui_brokers->GetValue().ToStdString();
+    std::string filter_query = gui_filter->GetValue().ToStdString();
 
     filter_query_ = filter_query;
 
@@ -131,11 +117,14 @@ void Inspector::OnRun(wxCommandEvent& event)
     }
     catch (JQException& e) {
         ShowErrorDialog(e.what());
+        SetGUIState(State::Idle);
         return;
     }
 
-    logger_debug << "consuming from topic: " << topic << ", brokers: " << brokers << ", max packets: " << max;
+    SyncCache();
+    buffer_.clear();
 
+    logger_debug << "consuming from topic: " << topic << ", brokers: " << brokers << ", max packets: " << max;
     ShowMessage("searching " + std::to_string(max) + " messages from " + topic + " with filter  " + filter_query + ", please wait...");
 
     // Start streaming thread for consuming packets
@@ -149,8 +138,14 @@ void Inspector::OnRun(wxCommandEvent& event)
         // we pass o to consume method because we want it to keep consuming until we stop the stream with our own logic
         kafka::consume(brokers, { topic }, 0, is_streaming_, [this, filter, &count, &total, max](std::shared_ptr<std::string> packet, std::shared_ptr<std::string>) {
 
+            if (total == 0) {
+                // Update GUI: we're now connected to brokers and actively consuming data
+                scheduler_->CallLaterOnMainThread([this]() {
+                    SetGUIState(State::Running);
+                });
+            }
+
             // On each received packet:
-            //std::cout << ".";
             total++;
             auto result = filter->Apply(packet);
 
@@ -164,9 +159,9 @@ void Inspector::OnRun(wxCommandEvent& event)
                     //dataViewList
                     wxVector<wxVariant> data;
                     data.push_back(wxVariant(id));
-                    data.push_back(wxVariant(*result));
+                    wxString wstr = wxString::FromUTF8(result->c_str());
+                    data.push_back(wxVariant(wstr));
                     gui_list_view->AppendItem(data);
-
                 });
                 ++count;
                 
@@ -185,10 +180,7 @@ void Inspector::OnRun(wxCommandEvent& event)
         *is_streaming_ = false;
 
         scheduler_->CallLaterOnMainThread([this, max, topic]() {
-            // Update buttons
-            gui_button_filter->Enable();
-            gui_button_run->SetLabelText("Run");
-            guitools::apply_graphic(gui_button_run, guitools::PNG::PLAY);
+            SetGUIState(State::Idle);
             UpdateStats(); 
             ShowMessage("stream closed, consumed " + std::to_string(buffer_.size()) + " messages from " + topic);
         });
@@ -197,29 +189,32 @@ void Inspector::OnRun(wxCommandEvent& event)
     t.detach();
 }
 
+void Inspector::OnStop(wxCommandEvent& event)
+{
+    SetGUIState(State::Idle);
+    *is_streaming_ = false;
+}
+
 void Inspector::OnFilter(wxCommandEvent& event)
 {
     ShowMessage("filtering...");
 
-    // Sync current values with cache
-    scheduler_->CallLaterOnMainThread([this]() {
-        SyncCache();
-    });
-
     auto start = std::chrono::high_resolution_clock::now();
-
-    if (gui_list_view->GetItemCount() > 0) {
-        gui_list_view->DeleteAllItems();
-    }
 
     filter_query_ = gui_filter->GetValue();
 
+
     // If user clears the filter then simply display all requests from buffer
     if (filter_query_.empty()) {
+        if (gui_list_view->GetItemCount() > 0) {
+            gui_list_view->DeleteAllItems();
+        }
+
         for (size_t i = 0; i < buffer_.size(); ++i) {
             wxVector<wxVariant> data;
-            data.push_back(wxVariant(std::to_string(i)));
-            data.push_back(*buffer_[i]);
+            data.push_back(wxVariant(std::to_string(i)));            
+            wxString wstr = wxString::FromUTF8(buffer_[i]->c_str());
+            data.push_back(wstr);
             gui_list_view->AppendItem(data);
         }
         UpdateStats();
@@ -239,6 +234,14 @@ void Inspector::OnFilter(wxCommandEvent& event)
         return;
     }
 
+    // Clear list
+    if (gui_list_view->GetItemCount() > 0) {
+        gui_list_view->DeleteAllItems();
+    }
+
+    // Sync current values with cache
+    SyncCache();
+
     for (size_t i = 0; i < buffer_.size(); ++i) {
 
         auto result = filter.Apply(buffer_[i]);
@@ -246,7 +249,9 @@ void Inspector::OnFilter(wxCommandEvent& event)
         if (jq::has_data(result)) {
             wxVector<wxVariant> data;
             data.push_back(wxVariant(std::to_string(i)));
-            data.push_back(*result);
+            // data.push_back(*result);
+            wxString wstr = wxString::FromUTF8(result->c_str());
+            data.push_back(wstr);
             gui_list_view->AppendItem(data);
         }
     }
@@ -292,7 +297,14 @@ void Inspector::OnSelect(wxDataViewEvent& event)
 
     try {
         auto result = filter.Apply(data);
-        gui_text_view->SetText(*jq::pretty_json(result));
+        std::string str = *jq::pretty_json(result);
+        gui_text_view->SetText(str);
+
+        if(gui_text_view->IsEmpty() && !str.empty()){
+            // Special case for linux, text does not get displayed at all (blank). This is a workaround.
+            wxString wstr = wxString::FromUTF8(str.c_str());
+            gui_text_view->SetValue(wstr);
+        }
 
         // highlight search word if any
         wxCommandEvent evt;
@@ -311,7 +323,7 @@ void Inspector::OnSelect(wxDataViewEvent& event)
 
 void Inspector::OnSearchPartial(wxCommandEvent& event)
 {
-    auto word = gui_search->GetValue();
+    std::string word = gui_search->GetValue().ToStdString();
     guitools::search_partial_styledtextctrl(gui_text_view, word);
     
 }
@@ -319,7 +331,7 @@ void Inspector::OnSearchPartial(wxCommandEvent& event)
 void Inspector::OnSearch(wxCommandEvent& event)
 {
     // search for all matches
-    auto word = gui_search->GetValue();
+    std::string word = gui_search->GetValue().ToStdString();
     guitools::search_styledtextctrl(gui_text_view, word);
 }
 
@@ -329,14 +341,69 @@ void Inspector::OnSearchCancel(wxCommandEvent& event)
     gui_text_view->IndicatorClearRange(0, gui_text_view->GetTextLength());
 }
 
+void Inspector::SetGUIState(State s)
+{
+    if (s == state_) {
+        return;
+    }
+    state_ = s;
+
+    switch (state_)
+    {
+    case Inspector::State::Idle:
+        logger_info << "IDLE";
+        
+        // Set button logo
+        guitools::apply_graphic(gui_button_run, guitools::PNG::PLAY);
+        guitools::apply_graphic(gui_button_filter, guitools::PNG::FILTER);
+        gui_button_run->SetLabelText("Run");
+        gui_button_run->Enable();
+        gui_button_filter->Enable();
+        gui_filter->Enable();
+
+        gui_button_run->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Inspector::OnRun), NULL, this);
+
+        break;
+    case Inspector::State::Connecting:
+        logger_info << "CONNECTING";
+        // update logo
+        guitools::apply_graphic(gui_button_run, guitools::PNG::STOP);
+        gui_button_run->SetLabelText("Stop");
+        gui_button_filter->Disable();
+        gui_filter->Disable();
+
+        // Clear display 
+        gui_list_view->DeleteAllItems();
+        gui_text_view->SetText("");
+
+        gui_button_run->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Inspector::OnStop), NULL, this);
+
+        break;
+    case Inspector::State::Running:
+        logger_info << "RUNNING";
+        // update button logo
+        guitools::apply_graphic(gui_button_run, guitools::PNG::STOP);
+        gui_button_run->SetLabelText("Stop");
+        gui_button_run->Enable();
+        gui_button_filter->Disable();
+        gui_filter->Disable();
+
+        gui_button_run->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Inspector::OnStop), NULL, this);
+        break;
+    default:
+        break;
+    }
+    // gui_button_connect->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Database::OnDisconnect), NULL, this);
+}
+
 void Inspector::SyncCache()
 {
     bool is_filter_empty = gui_filter->GetValue().empty();
     // update cache with new request
     settings::cache::Update(
         gui_buffer_size->GetValue(),
-        gui_topic->GetValue(),
-        gui_filter->GetValue()
+        gui_topic->GetValue().ToStdString(),
+        gui_filter->GetValue().ToStdString()
     );
     
 

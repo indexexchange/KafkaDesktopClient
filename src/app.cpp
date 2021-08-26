@@ -117,12 +117,12 @@ void App::OnAbout(wxCommandEvent& event)
     about->AddHeader("Description");
 
     std::stringstream ss;
-    ss << R"##(The Kafka Desktop Client is a cross-platform desktop application that consumes, analyzes, and inspects Kafka messages. Using the flexible set of tools, you can quickly and easily browse and filter messages, gather statistics, and scan and match traffic from different topics.\n\n)##";
+    ss << R"##(The Kafka Desktop Client is a cross-platform desktop application that consumes, analyzes, and inspects Kafka messages. Using the flexible set of tools, you can quickly and easily browse and filter messages, gather statistics and scan and match traffic from different topics.\n\n)##";
     about->AddParagraph(ss.str());
     about->NewLine();
 
     about->AddHeader("License");
-    about->AddParagraph("Internal use at Index Exchange.");
+    about->AddParagraph("Apache 2.0");
 
     about->Show();
 }
@@ -144,7 +144,7 @@ void App::OnSelectMenuExport(wxCommandEvent& event)
     if (saveFileDialog.ShowModal() == wxID_CANCEL)
         return;     // the user changed idea...
 
-    std::string path = saveFileDialog.GetPath();
+    std::string path = saveFileDialog.GetPath().ToStdString();
     logger_info << "Export to: " << path;
 
     std::vector<std::shared_ptr<std::string>> results;
@@ -284,7 +284,7 @@ void App::OnSelectMenuImport(wxCommandEvent& event)
     if (OpenFileDialog.ShowModal() == wxID_CANCEL)
         return;     // the user changed idea...
 
-    std::string path = OpenFileDialog.GetPath();
+    std::string path = OpenFileDialog.GetPath().ToStdString();
     logger_info << "Import: " << path;
 
     auto selected_tab = auinotebook->GetSelection();    // 0 = inspector, 1 = stats, 2 = traffic match

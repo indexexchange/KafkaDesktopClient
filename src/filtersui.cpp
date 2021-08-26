@@ -37,7 +37,7 @@ void FiltersUI::OnClose(wxCloseEvent& event)
 
 void FiltersUI::OnTextFiltersSearch(wxCommandEvent& event)
 {
-    std::string query = gui_filters_search->GetValue();
+    std::string query = gui_filters_search->GetValue().ToStdString();
 
     // treat only queries larger than 3
     if (query.size() < 3) {
@@ -51,7 +51,7 @@ void FiltersUI::OnTextFiltersSearch(wxCommandEvent& event)
         bool found = false;
         
         for (int j = 0; j < gui_filters_grid->GetNumberCols(); ++j) {
-            std::string cell_value = gui_filters_grid->GetCellValue(i, j);
+            std::string cell_value = gui_filters_grid->GetCellValue(i, j).ToStdString();
 
             if (util::is_substring(cell_value, query)) {
                 found = true;
@@ -76,8 +76,8 @@ void FiltersUI::OnClickFiltersApply(wxCommandEvent& event)
 {
     if (selection_handler_ != nullptr && row_ != -1) {
 
-        std::string topic = gui_filters_grid->GetCellValue(row_, kTopic);
-        std::string filter = gui_filters_grid->GetCellValue(row_, kFilter);
+        std::string topic = gui_filters_grid->GetCellValue(row_, kTopic).ToStdString();
+        std::string filter = gui_filters_grid->GetCellValue(row_, kFilter).ToStdString();
 
         selection_handler_(topic, filter);
 
@@ -117,7 +117,7 @@ void FiltersUI::OnClickFiltersImport(wxCommandEvent& event)
 
     if (LoadDialog->ShowModal() == wxID_OK) // If the user clicked "OK"
     {
-        auto file = LoadDialog->GetPath();
+        std::string file = LoadDialog->GetPath().ToStdString();
 
         logger_info << "Importing filters from: " << file;
 
@@ -158,7 +158,7 @@ void FiltersUI::OnClickFiltersExport(wxCommandEvent& event)
 
     if (SaveDialog->ShowModal() == wxID_OK) // If the user clicked "OK"
     {
-        auto file = SaveDialog->GetPath();
+        std::string file = SaveDialog->GetPath().ToStdString();
         
         logger_info << "Exporting filters to file: " << file;
 
@@ -182,7 +182,7 @@ void FiltersUI::SaveGridData()
         std::vector<std::string> row;
 
         for (int j = 0; j < gui_filters_grid->GetNumberCols(); ++j) {
-            row.push_back(gui_filters_grid->GetCellValue(i, j));
+            row.push_back(gui_filters_grid->GetCellValue(i, j).ToStdString());
         }
         grid_data.push_back(row);
     }
@@ -199,7 +199,7 @@ void FiltersUI::SaveGridDataTo(std::string path)
         std::vector<std::string> row;
 
         for (int j = 0; j < gui_filters_grid->GetNumberCols(); ++j) {
-            row.push_back(gui_filters_grid->GetCellValue(i, j));
+            row.push_back(gui_filters_grid->GetCellValue(i, j).ToStdString());
         }
         grid_data.push_back(row);
     }

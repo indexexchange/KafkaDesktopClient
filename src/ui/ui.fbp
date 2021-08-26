@@ -3005,7 +3005,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style">wxTAB_TRAVERSAL</property>
-            <object class="wxBoxSizer" expanded="0">
+            <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer16</property>
                 <property name="orient">wxVERTICAL</property>
@@ -3596,7 +3596,7 @@
                 </object>
             </object>
         </object>
-        <object class="Panel" expanded="1">
+        <object class="Panel" expanded="0">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -3618,16 +3618,16 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style">wxTAB_TRAVERSAL</property>
-            <object class="wxBoxSizer" expanded="1">
+            <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer202</property>
                 <property name="orient">wxVERTICAL</property>
                 <property name="permission">none</property>
-                <object class="sizeritem" expanded="1">
+                <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">0</property>
-                    <object class="wxBoxSizer" expanded="1">
+                    <object class="wxBoxSizer" expanded="0">
                         <property name="minimum_size"></property>
                         <property name="name">bSizer25</property>
                         <property name="orient">wxHORIZONTAL</property>
@@ -4246,7 +4246,7 @@
                             <property name="border">5</property>
                             <property name="flag">wxALL</property>
                             <property name="proportion">1</property>
-                            <object class="wxTextCtrl" expanded="0">
+                            <object class="wxComboBox" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -4260,6 +4260,7 @@
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
+                                <property name="choices"></property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
@@ -4277,7 +4278,6 @@
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
-                                <property name="maxlength"></property>
                                 <property name="min_size"></property>
                                 <property name="minimize_button">0</property>
                                 <property name="minimum_size"></property>
@@ -4290,12 +4290,13 @@
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
                                 <property name="resize">Resizable</property>
+                                <property name="selection">-1</property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
                                 <property name="style"></property>
                                 <property name="subclass">; ; forward_declare</property>
                                 <property name="toolbar_pane">0</property>
-                                <property name="tooltip">apply this filter to topic 1 before matching</property>
+                                <property name="tooltip"></property>
                                 <property name="validator_data_type"></property>
                                 <property name="validator_style">wxFILTER_NONE</property>
                                 <property name="validator_type">wxDefaultValidator</property>
@@ -4371,7 +4372,7 @@
                             <property name="border">5</property>
                             <property name="flag">wxALL</property>
                             <property name="proportion">1</property>
-                            <object class="wxTextCtrl" expanded="0">
+                            <object class="wxComboBox" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -4385,6 +4386,7 @@
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
+                                <property name="choices"></property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
@@ -4402,7 +4404,6 @@
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
-                                <property name="maxlength"></property>
                                 <property name="min_size"></property>
                                 <property name="minimize_button">0</property>
                                 <property name="minimum_size"></property>
@@ -4415,12 +4416,13 @@
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
                                 <property name="resize">Resizable</property>
+                                <property name="selection">-1</property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
                                 <property name="style"></property>
                                 <property name="subclass">; ; forward_declare</property>
                                 <property name="toolbar_pane">0</property>
-                                <property name="tooltip">apply this filter to topic 2 before matching</property>
+                                <property name="tooltip"></property>
                                 <property name="validator_data_type"></property>
                                 <property name="validator_style">wxFILTER_NONE</property>
                                 <property name="validator_type">wxDefaultValidator</property>
@@ -4693,7 +4695,7 @@
                                                     <property name="border">5</property>
                                                     <property name="flag">wxALL</property>
                                                     <property name="proportion">1</property>
-                                                    <object class="wxTextCtrl" expanded="0">
+                                                    <object class="wxComboBox" expanded="0">
                                                         <property name="BottomDockable">1</property>
                                                         <property name="LeftDockable">1</property>
                                                         <property name="RightDockable">1</property>
@@ -4707,6 +4709,7 @@
                                                         <property name="caption"></property>
                                                         <property name="caption_visible">1</property>
                                                         <property name="center_pane">0</property>
+                                                        <property name="choices"></property>
                                                         <property name="close_button">1</property>
                                                         <property name="context_help"></property>
                                                         <property name="context_menu">1</property>
@@ -4724,7 +4727,6 @@
                                                         <property name="max_size"></property>
                                                         <property name="maximize_button">0</property>
                                                         <property name="maximum_size"></property>
-                                                        <property name="maxlength"></property>
                                                         <property name="min_size"></property>
                                                         <property name="minimize_button">0</property>
                                                         <property name="minimum_size"></property>
@@ -4737,12 +4739,13 @@
                                                         <property name="pin_button">1</property>
                                                         <property name="pos"></property>
                                                         <property name="resize">Resizable</property>
+                                                        <property name="selection">-1</property>
                                                         <property name="show">1</property>
                                                         <property name="size"></property>
                                                         <property name="style"></property>
                                                         <property name="subclass">; ; forward_declare</property>
                                                         <property name="toolbar_pane">0</property>
-                                                        <property name="tooltip">apply filter after requests have been collected</property>
+                                                        <property name="tooltip"></property>
                                                         <property name="validator_data_type"></property>
                                                         <property name="validator_style">wxFILTER_NONE</property>
                                                         <property name="validator_type">wxDefaultValidator</property>
@@ -4751,7 +4754,6 @@
                                                         <property name="window_extra_style"></property>
                                                         <property name="window_name"></property>
                                                         <property name="window_style"></property>
-                                                        <event name="OnKeyUp">OnKeyUpFilter</event>
                                                     </object>
                                                 </object>
                                             </object>
