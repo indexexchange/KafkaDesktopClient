@@ -1,9 +1,7 @@
 # Kafka Desktop Client
 
 The Kafka Desktop Client is a cross-platform desktop application that consumes, analyzes, and inspects Kafka messages in json format. Using a flexible set of tools, you can quickly and easily browse and filter messages, gather statistics, and scan and match traffic from different topics.
-To begin using the Kafka Desktop Client:
-1. [Download the latest version of the client for your operating system.](#Install)
-2. Unzip the file and run **KafkaDesktopClient** executable
+The tool loads requests from a kafka topic and stores them in an internal buffer on which jq filters can be applied to gather information and statistics. 
 
 # Features
 
@@ -48,12 +46,14 @@ The screenshot below lists all message of `topic1` and `topic2` matched if their
 
 Version | Linux | macOS | Windows
 :------:|:-------:|:-------:|:-------:
-2.3  | [Ubuntu]() | [catalina, mojave]() | [Windows 10]()
+2.6  | [linux](https://github.com/indexexchange/KafkaDesktopClient/releases/download/2.6/KafkaDesktopClient_2.6_linux.tar.gz) | macos | windows10
+2.3  | linux | macos | windows10
 
 # Changelog 
 
 Version                    |  Description
 :-------------------------:|:--------------------------
+2.6 | <ul><li>Full JQ support - can use all official queries from [jq manual](https://stedolan.github.io/jq/manual/)</li><li>Add Dark Mode support for Linux and Macos</li><li>Fix linux issue where some results show as blank line because of UTF8 conversion</li><li>Statistics tab now supports the following operations Average, Count, Sum. Select your filter and operation and collect results.</li></ul>
 2.3 | Initial opensource release
 
 # <a name="jq">JQ filter support</a>
